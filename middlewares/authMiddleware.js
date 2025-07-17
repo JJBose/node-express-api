@@ -10,7 +10,7 @@ function authMiddleware(req, res, next) {
   const token = authHeader.split(' ')[1];
 
   try {
-    const decoded = Buffer.from(token, 'base64').toString(); // "username:timestamp"
+    const decoded = Buffer.from(token, 'base64').toString();
     const [username] = decoded.split(':');
 
     const userExists = users.find(u => u.username === username);

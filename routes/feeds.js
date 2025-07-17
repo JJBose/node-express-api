@@ -1,9 +1,9 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const feeds = require('../data/feeds');
-const authMiddleware = require('../middlewares/authMiddleware');
+const feeds = require("../data/feeds");
+const authMiddleware = require("../middlewares/authMiddleware");
 
-router.get('/', authMiddleware, (req, res) => {
+router.get("/", authMiddleware, (req, res) => {
   let { page = 1, limit = 10 } = req.query;
 
   page = parseInt(page);
@@ -21,8 +21,29 @@ router.get('/', authMiddleware, (req, res) => {
     page,
     limit,
     total: feeds.length,
-    feeds: paginatedFeeds
+    feeds: paginatedFeeds,
   });
+});
+
+router.post("/", authMiddleware, (req, res) => {
+  const { title, content } = req.body;
+
+  if (!title || !content) {
+    return res.status(400).json({ message: "Title and content are required" });
+  }
+
+  const feeds = require("../data/feeds"); 
+
+  const newId = feeds.length > 0 ? feeds[feeds.length - 1].id + 1 : 1;
+  const newFeed = {
+    id: newId,
+    title,
+    content,
+  };
+
+  feeds.push(newFeed);
+
+  res.status(201).json({ message: "Feed created", id: newId });
 });
 
 module.exports = router;
