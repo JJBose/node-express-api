@@ -69,4 +69,18 @@ router.put("/:id", authMiddleware, (req, res) => {
   res.json({ message: "Feed updated" });
 });
 
+router.delete("/:id", authMiddleware, (req, res) => {
+  const { id } = req.params;
+  const feeds = require("../data/feeds");
+
+  const index = feeds.findIndex((feed) => feed.id === parseInt(id));
+  if (index === -1) {
+    return res.status(404).json({ message: "Feed not found" });
+  }
+
+  feeds.splice(index, 1);
+
+  res.json({ message: "Feed deleted" });
+});
+
 module.exports = router;
